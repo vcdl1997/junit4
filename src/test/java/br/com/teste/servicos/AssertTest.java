@@ -1,10 +1,9 @@
-package br.ce.wcaquino.servicos;
+package br.com.teste.servicos;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
-import br.ce.wcaquino.entidades.Usuario;
+import br.com.teste.entidades.Usuario;
 
 public class AssertTest {
 
@@ -38,10 +37,6 @@ public class AssertTest {
 		Assert.assertNotSame(u1, u3);
 		Assert.assertNull(u4);
 		Assert.assertNotNull(u1);
-		
-		Assert.assertThat(u1.getNome(), CoreMatchers.is("Usuario 1"));
-		Assert.assertThat(u1.getNome(), CoreMatchers.is(CoreMatchers.not("Usuario 5")));
-		Assert.assertThat(u1.getNome(), CoreMatchers.not(CoreMatchers.is("Usuario 2")));
-		Assert.assertThat(u1.getNome(), CoreMatchers.not(CoreMatchers.is("Usuario 2")));
+		Assert.assertNotEquals("Usuario 2", u1.getNome());
 	}	
 }

@@ -1,4 +1,4 @@
-package br.ce.wcaquino.entidades;
+package br.com.teste.entidades;
 
 public class Usuario {
 
