@@ -21,13 +21,17 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
+import org.mockito.Mockito;
 
+import br.com.teste.daos.LocacaoDAO;
+import br.com.teste.daos.impl.LocacaoDaoImpl;
 import br.com.teste.entidades.Filme;
 import br.com.teste.entidades.Locacao;
 import br.com.teste.entidades.Usuario;
 import br.com.teste.exceptions.FilmeSemEstoqueException;
 import br.com.teste.exceptions.ListaDeFilmesNaoInformadaException;
 import br.com.teste.exceptions.UsuarioLocacaoNaoInformadoException;
+import br.com.teste.exceptions.UsuarioNegativadoException;
 import br.com.teste.utils.DataUtils;
 
 //lembra de incluir dependencia eclemma no eclipse para calcular percentual de cobertura de testes no projeto
@@ -40,10 +44,14 @@ public class LocacaoServiceTest {
 	private Usuario usuario;
 	private List<Filme> filmes = new ArrayList<Filme>();
 	
+	private LocacaoDAO dao = new LocacaoDaoImpl();
+	private SPCService spcService;
 	
 	@Before
 	public void setUp() {
-		this.locacaoService = new LocacaoService();
+		this.dao = Mockito.mock(LocacaoDAO.class);
+		this.spcService = Mockito.mock(SPCService.class);
+		this.locacaoService = new LocacaoService(dao, spcService);
 		this.usuario = umUsuario().agora();
 	}
 	
@@ -85,6 +93,21 @@ public class LocacaoServiceTest {
 			);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testUsuarioNegativadoNaoPodeFazerAlugarFilme(){
+		try {
+			//cenário
+			this.filmes = umaListaFilmesComOSeguinteTamanho(2).agora();
+			
+			// ação			
+			Mockito.when(spcService.possuiNegativacao(this.usuario)).thenReturn(true);
+			
+			this.locacaoService.alugarFilme(this.usuario, this.filmes);
+		} catch (Exception e) {
+			error.checkThat(e, is(instanceOf(UsuarioNegativadoException.class)));
 		}
 	}
 	

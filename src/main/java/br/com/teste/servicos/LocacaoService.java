@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import br.com.teste.daos.LocacaoDAO;
 import br.com.teste.entidades.Filme;
 import br.com.teste.entidades.Locacao;
 import br.com.teste.entidades.Usuario;
@@ -13,9 +14,18 @@ import br.com.teste.exceptions.FilmeSemEstoqueException;
 import br.com.teste.exceptions.LimiteDeFilmesPorLocacaoException;
 import br.com.teste.exceptions.ListaDeFilmesNaoInformadaException;
 import br.com.teste.exceptions.UsuarioLocacaoNaoInformadoException;
+import br.com.teste.exceptions.UsuarioNegativadoException;
 import br.com.teste.utils.DataUtils;
 
 public class LocacaoService {
+	
+	private LocacaoDAO dao;
+	private SPCService spcService;
+	
+	public LocacaoService(LocacaoDAO dao, SPCService spc) {
+		this.dao = dao;
+		this.spcService = spc;
+	}
 	
 	public Double calcularValorLocacao(List<Filme> filmes) {
 		double desconto = 0d, total = 0d;
@@ -47,6 +57,8 @@ public class LocacaoService {
 		
 		if(filmes.stream().count() > 6) throw new LimiteDeFilmesPorLocacaoException();
 		
+		if(spcService.possuiNegativacao(usuario)) throw new UsuarioNegativadoException();
+		
 		Locacao locacao = new Locacao();
 		locacao.setFilmes(filmes);
 		locacao.setUsuario(usuario);
@@ -62,11 +74,10 @@ public class LocacaoService {
 		}
 		
 		locacao.setDataRetorno(dataEntrega);
+		dao.salvar(locacao);
 		//Salvando a locacao...	
 		//TODO adicionar método para salvar
 		
 		return locacao;
 	}
-	
-	
 }
