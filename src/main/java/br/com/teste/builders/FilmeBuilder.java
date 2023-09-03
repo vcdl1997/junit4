@@ -19,7 +19,7 @@ public class FilmeBuilder {
 		for(int i = 0; i<tamanho; i++) {
 			Filme filme = new Filme();
 			filme.setNome("Filme Teste " + Math.abs(new Random().nextInt()));
-			filme.setEstoque(new Random().nextInt());
+			filme.setEstoque(Math.abs(new Random().nextInt()));
 			filme.setPrecoLocacao(49.9d);
 			builder.filmes.add(filme);
 		}

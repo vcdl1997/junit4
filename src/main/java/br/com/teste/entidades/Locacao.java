@@ -11,6 +11,17 @@ public class Locacao {
 	private Date dataRetorno;
 	private Double valor;
 	
+	public Locacao() {
+	}
+	
+	public Locacao(Usuario usuario, List<Filme> filmes, Date dataLocacao, Date dataRetorno, Double valor) {
+		this.usuario = usuario;
+		this.filmes = filmes;
+		this.dataLocacao = dataLocacao;
+		this.dataRetorno = dataRetorno;
+		this.valor = valor;
+	}
+
 	public Usuario getUsuario() {
 		return usuario;
 	}

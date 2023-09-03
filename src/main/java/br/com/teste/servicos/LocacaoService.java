@@ -21,10 +21,12 @@ public class LocacaoService {
 	
 	private LocacaoDAO dao;
 	private SPCService spcService;
+	private EmailService emailService;
 	
-	public LocacaoService(LocacaoDAO dao, SPCService spc) {
+	public LocacaoService(LocacaoDAO dao, SPCService spc, EmailService emailService) {
 		this.dao = dao;
 		this.spcService = spc;
+		this.emailService = emailService;
 	}
 	
 	public Double calcularValorLocacao(List<Filme> filmes) {
@@ -79,5 +81,16 @@ public class LocacaoService {
 		//TODO adicionar método para salvar
 		
 		return locacao;
+	}
+	
+	
+	public void notificarAtrasos() {
+		List<Locacao> locacoes = this.dao.obterLocacoesPendentes();
+				
+		for(Locacao locacao : locacoes) {
+			if(locacao.getDataRetorno().before(new Date())) {
+				this.emailService.notificar(locacao.getUsuario());
+			}
+		}
 	}
 }
